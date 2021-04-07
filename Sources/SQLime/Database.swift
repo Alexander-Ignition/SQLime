@@ -30,7 +30,7 @@ public final class Database {
     }
 
     /// SQLite db handle.
-    private var db: OpaquePointer!
+    public var db: OpaquePointer!
 
     /// Use `Database.open(at:options:)`.
     private init() {}

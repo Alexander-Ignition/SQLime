@@ -30,12 +30,22 @@ public final class Database {
     }
 
     /// SQLite db handle.
-    public var db: OpaquePointer!
+    public private(set) var db: OpaquePointer!
+    
+    public private(set) var isOpen = true
 
     /// Use `Database.open(at:options:)`.
     private init() {}
 
     deinit {
+        close()
+    }
+    
+    public func close() {
+        guard isOpen else {
+            return
+        }
+        isOpen = false
         sqlite3_close_v2(db)
     }
 

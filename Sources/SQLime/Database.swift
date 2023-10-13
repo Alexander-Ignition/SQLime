@@ -5,7 +5,7 @@ public final class Database {
     /// Execution callback type.
     ///
     /// - SeeAlso: `Database.execute(_:handler:)`.
-    public typealias ExecutionHadler = (_ row: [String: String]) -> Void
+    public typealias ExecutionHandler = (_ row: [String: String]) -> Void
 
     public struct OpenOptions: OptionSet {
         public let rawValue: Int32
@@ -33,21 +33,6 @@ public final class Database {
     public private(set) var db: OpaquePointer!
     
     public private(set) var isOpen = true
-
-    /// Use `Database.open(at:options:)`.
-    private init() {}
-
-    deinit {
-        close()
-    }
-    
-    public func close() {
-        guard isOpen else {
-            return
-        }
-        isOpen = false
-        sqlite3_close_v2(db)
-    }
 
     /// Absolute path to database file.
     public var path: String {
@@ -77,6 +62,21 @@ public final class Database {
         return database
     }
 
+    /// Use `Database.open(at:options:)`.
+    private init() {}
+
+    deinit {
+        close()
+    }
+
+    public func close() {
+        guard isOpen else {
+            return
+        }
+        isOpen = false
+        sqlite3_close_v2(db)
+    }
+
     /// Run multiple statements of SQL.
     ///
     /// - Parameter sql: statements.
@@ -92,7 +92,7 @@ public final class Database {
     ///   - sql: statements.
     ///   - handler: Table row handler.
     /// - Throws: `DatabaseError`.
-    public func execute(_ sql: String, handler: @escaping ExecutionHadler) throws {
+    public func execute(_ sql: String, handler: @escaping ExecutionHandler) throws {
         var context = handler
         let status = withUnsafeMutableBytes(of: &context) { ctx -> Int32 in
             sqlite3_exec(db, sql, { (ctx, argc, argv, column) -> Int32 in
@@ -102,7 +102,7 @@ public final class Database {
                     let name = String(cString: column![i]!)
                     row[name] = value
                 }
-                ctx!.load(as: ExecutionHadler.self)(row)
+                ctx!.load(as: ExecutionHandler.self)(row)
                 return SQLITE_OK
             }, ctx.baseAddress, nil)
         }
@@ -121,4 +121,38 @@ public final class Database {
         throw DatabaseError(code: code, message: message, reason: reason)
     }
 
+}
+
+private final class ExecutionContext {
+    let handler: Database.ExecutionHandler
+
+    init(_ handler: @escaping Database.ExecutionHandler) {
+        self.handler = handler
+    }
+}
+
+private func readRow(
+    ctx: UnsafeMutableRawPointer?,
+    argc: Int32,
+    argv: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>?,
+    columns: UnsafeMutablePointer<UnsafeMutablePointer<CChar>?>?
+) -> Int32 {
+    guard let ctx, let argv, let columns else {
+        return SQLITE_OK
+    }
+    let count = Int(argc)
+    var row = [String: String](minimumCapacity: count)
+
+    for index in 0..<count {
+        guard let ptr = columns.advanced(by: index).pointee else {
+            continue
+        }
+        let name = String(cString: ptr)
+        if let value = argv.advanced(by: index).pointee {
+            row[name] = String(cString: value)
+        }
+    }
+    let context = Unmanaged<ExecutionContext>.fromOpaque(ctx).takeUnretainedValue()
+    context.handler(row)
+    return SQLITE_OK
 }

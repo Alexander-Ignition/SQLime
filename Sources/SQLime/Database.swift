@@ -93,19 +93,9 @@ public final class Database {
     ///   - handler: Table row handler.
     /// - Throws: `DatabaseError`.
     public func execute(_ sql: String, handler: @escaping ExecutionHandler) throws {
-        var context = handler
-        let status = withUnsafeMutableBytes(of: &context) { ctx -> Int32 in
-            sqlite3_exec(db, sql, { (ctx, argc, argv, column) -> Int32 in
-                var row: [String: String] = [:]
-                for i in 0..<Int(argc) {
-                    let value = String(cString: argv![i]!)
-                    let name = String(cString: column![i]!)
-                    row[name] = value
-                }
-                ctx!.load(as: ExecutionHandler.self)(row)
-                return SQLITE_OK
-            }, ctx.baseAddress, nil)
-        }
+        let context = ExecutionContext(handler)
+        let ctx = Unmanaged.passUnretained(context).toOpaque()
+        let status = sqlite3_exec(db, sql, readRow, ctx, nil)
         try _check(status)
     }
 

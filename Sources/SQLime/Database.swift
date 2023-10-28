@@ -30,9 +30,7 @@ public final class Database {
     }
 
     /// SQLite db handle.
-    public private(set) var db: OpaquePointer!
-    
-    public private(set) var isOpen = true
+    private var db: OpaquePointer!
 
     /// Absolute path to database file.
     public var path: String {
@@ -66,15 +64,8 @@ public final class Database {
     private init() {}
 
     deinit {
-        close()
-    }
-
-    public func close() {
-        guard isOpen else {
-            return
-        }
-        isOpen = false
-        sqlite3_close_v2(db)
+        let code = sqlite3_close_v2(db)
+        assert(code == SQLITE_OK, "sqlite3_close_v2(): \(code)")
     }
 
     /// Run multiple statements of SQL.

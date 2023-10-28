@@ -34,6 +34,11 @@ final class DatabaseTests: XCTestCase {
         }
     }
 
+    func testPathInMemory() throws {
+        let database = try Database.open(at: path, options: [.readwrite, .memory])
+        XCTAssertEqual(database.path, "")
+    }
+
     func testExecute() throws {
         let database = try Database.open(at: path, options: [.readwrite, .memory])
 

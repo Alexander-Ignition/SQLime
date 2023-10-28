@@ -33,16 +33,12 @@ public final class Database {
     private var db: OpaquePointer!
 
     /// Absolute path to database file.
-    public var path: String {
-        String(cString: sqlite3_db_filename(db, nil))
-    }
+    public var path: String { sqlite3_db_filename(db, nil).string ?? "" }
 
     /// Determine if a database is read-only.
     ///
     /// - SeeAlso: `OpenOptions.readonly`.
-    public var isReadonly: Bool {
-        sqlite3_db_readonly(db, nil) == 1
-    }
+    public var isReadonly: Bool { sqlite3_db_readonly(db, nil) == 1 }
 
     /// Opening a new database connection.
     ///

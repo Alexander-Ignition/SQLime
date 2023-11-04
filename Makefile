@@ -10,7 +10,7 @@ docs:
 		-destination 'platform=macOS'
 	xcrun docc process-archive transform-for-static-hosting \
 		$(DERIVED_DATA_PATH)/Build/Products/Debug/$(TARGET_NAME).doccarchive \
-		--hosting-base-path "/SQLime" \
+		--hosting-base-path $(TARGET_NAME) \
 		--output-path $@
 
 clean:

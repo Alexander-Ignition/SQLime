@@ -27,6 +27,10 @@ public struct DatabaseError: Error, Equatable, Hashable {
         self.init(code: code, db: database.db)
     }
 
+    init(code: Int32, statement: PreparedStatement) {
+        self.init(code: code, db: statement.db)
+    }
+
     private init(code: Int32, db: OpaquePointer?) {
         self.code = code
         self.message = sqlite3_errstr(code).string ?? ""

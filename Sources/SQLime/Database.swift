@@ -30,7 +30,7 @@ public final class Database {
     }
 
     /// SQLite db handle.
-    private var db: OpaquePointer!
+    private(set) var db: OpaquePointer!
 
     /// Absolute path to database file.
     public var path: String { sqlite3_db_filename(db, nil).string ?? "" }
@@ -51,7 +51,7 @@ public final class Database {
         let database = Database()
 
         let code = sqlite3_open_v2(path, &database.db, options.rawValue, nil)
-        try database._check(code)
+        try database.check(code)
 
         return database
     }
@@ -70,7 +70,7 @@ public final class Database {
     /// - Throws: `DatabaseError`.
     public func execute(_ sql: String) throws {
         let status = sqlite3_exec(db, sql, nil, nil, nil)
-        try _check(status)
+        try check(status)
     }
 
     /// Run multiple statements of SQL with row handler.
@@ -83,19 +83,16 @@ public final class Database {
         let context = ExecutionContext(handler)
         let ctx = Unmanaged.passUnretained(context).toOpaque()
         let status = sqlite3_exec(db, sql, readRow, ctx, nil)
-        try _check(status)
+        try check(status)
     }
 
     /// Check result code.
     ///
     /// - Throws: `DatabaseError` if code not ok.
-    private func _check(_ code: Int32) throws {
-        guard code != SQLITE_OK else { return }
-
-        let message = String(cString: sqlite3_errstr(code))
-        let reason = String(cString: sqlite3_errmsg(db))
-
-        throw DatabaseError(code: code, message: message, reason: reason)
+    private func check(_ code: Int32) throws {
+        if code != SQLITE_OK {
+            throw DatabaseError(code: code, database: self)
+        }
     }
 
 }

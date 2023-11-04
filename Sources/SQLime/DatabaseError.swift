@@ -1,3 +1,5 @@
+import SQLite3
+
 /// SQLite database error.
 public struct DatabaseError: Error, Equatable, Hashable {
     /// Failed result code.
@@ -19,5 +21,15 @@ public struct DatabaseError: Error, Equatable, Hashable {
         self.code = code
         self.message = message
         self.reason = reason
+    }
+
+    init(code: Int32, database: Database) {
+        self.init(code: code, db: database.db)
+    }
+
+    private init(code: Int32, db: OpaquePointer?) {
+        self.code = code
+        self.message = sqlite3_errstr(code).string ?? ""
+        self.reason = sqlite3_errmsg(db).string ?? ""
     }
 }

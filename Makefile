@@ -11,7 +11,7 @@ docs:
 	xcrun docc process-archive \
 		transform-for-static-hosting $(DERIVED_DATA_PATH)/Build/Products/Debug/$(TARGET_NAME).doccarchive \
 		--output-path $@ \
-		--hosting-base-path https://Alexander-Ignition.github.io/SQLime
+		--hosting-base-path $(TARGET_NAME)
 
 clean:
 	swift package clean

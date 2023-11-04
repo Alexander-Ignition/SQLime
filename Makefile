@@ -8,10 +8,10 @@ docs:
 		-scheme $(TARGET_NAME) \
 		-derivedDataPath $(DERIVED_DATA_PATH) \
 		-destination 'platform=macOS'
-	xcrun docc process-archive \
-		transform-for-static-hosting $(DERIVED_DATA_PATH)/Build/Products/Debug/$(TARGET_NAME).doccarchive \
-		--output-path $@ \
-		--hosting-base-path $(TARGET_NAME)
+	xcrun docc process-archive transform-for-static-hosting \
+		$(DERIVED_DATA_PATH)/Build/Products/Debug/$(TARGET_NAME).doccarchive \
+		--hosting-base-path "/SQLime" \
+		--output-path $@
 
 clean:
 	swift package clean

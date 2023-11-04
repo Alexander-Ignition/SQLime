@@ -110,6 +110,21 @@ public final class PreparedStatement {
         }
     }
 
+    // MARK: - Decodable
+
+    public func array<T>(decoding type: T.Type) throws -> [T] where T: Decodable {
+        var array: [T] = []
+        while try next() {
+            let value = try decode(type)
+            array.append(value)
+        }
+        return array
+    }
+
+    public func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
+        try StatementDecoder.shared.decode(type, from: self)
+    }
+
     // MARK: - String
 
     public func string(at index: Int32) -> String? {

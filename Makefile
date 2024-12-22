@@ -8,6 +8,14 @@ clean:
 	swift package clean
 	rm -rf $(OUTPUD_DIR)
 
+# MARK: - format
+
+lint:
+	swift format lint --recursive --strict ./
+
+format:
+	swift format --recursive --in-place  ./
+
 # MARK: - Tests
 
 test:

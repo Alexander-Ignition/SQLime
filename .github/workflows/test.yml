@@ -1,0 +1,50 @@
+name: Test
+on:
+  push:
+    branches:
+      - main
+    tags-ignore:
+      - '**'
+    paths:
+      - 'Source/**'
+      - 'Tests/**'
+      - '.github/workflows/**'
+      - 'Package.swift'
+      - 'Makefile'
+  pull_request:
+    branches:
+      - '**'
+    paths:
+      - 'Source/**'
+      - 'Tests/**'
+      - '.github/workflows/**'
+      - 'Package.swift'
+      - 'Makefile'
+
+jobs:
+  Apple:
+    name: Test ${{ matrix.name }}
+    runs-on: macOS-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: macOS
+            target: test-macos
+          - name: iOS
+            target: test-ios
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build and test
+        run: make ${{ matrix.target }}
+        shell: bash
+  SPM:
+    name: Test with SPM
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build and test
+        run: swift test
+        shell: bash

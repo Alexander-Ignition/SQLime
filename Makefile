@@ -1,19 +1,38 @@
 TARGET_NAME = SQLime
-DERIVED_DATA_PATH = ./DerivedData
+OUTPUD_DIR = ./Build
+DERIVED_DATA_PATH = $(OUTPUD_DIR)/DerivedData
 
-.PHONY: docs clean
-
-docs:
-	xcodebuild docbuild -quiet \
-		-scheme $(TARGET_NAME) \
-		-derivedDataPath $(DERIVED_DATA_PATH) \
-		-destination 'platform=macOS'
-	xcrun docc process-archive transform-for-static-hosting \
-		$(DERIVED_DATA_PATH)/Build/Products/Debug/$(TARGET_NAME).doccarchive \
-		--hosting-base-path $(TARGET_NAME) \
-		--output-path $@
+.PHONY: clean, test, test-ios
 
 clean:
 	swift package clean
-	rm -rf $(DERIVED_DATA_PATH)
-	rm -rf docs
+	rm -rf $(OUTPUD_DIR)
+
+# MARK: - Tests
+
+test:
+	swift test
+
+XCODEBUILD_TEST = xcodebuild test -quiet -scheme $(TARGET_NAME)
+
+test-macos:
+	$(XCODEBUILD_TEST) -destination 'platform=macOS'
+
+test-ios:
+	$(XCODEBUILD_TEST) -destination 'platform=iOS Simulator,name=iPhone 16'
+
+# MARK: - DocC
+
+DOCC_ARCHIVE = $(DERIVED_DATA_PATH)/Build/Products/Debug/$(TARGET_NAME).doccarchive
+
+$(DOCC_ARCHIVE):
+	xcodebuild docbuild \
+		-quiet \
+		-scheme $(TARGET_NAME) \
+		-destination "generic/platform=macOS" \
+		-derivedDataPath $(DERIVED_DATA_PATH)
+
+$(OUTPUD_DIR)/Docs: $(DOCC_ARCHIVE)
+	xcrun docc process-archive transform-for-static-hosting $^ \
+		--hosting-base-path $(TARGET_NAME) \
+		--output-path $@

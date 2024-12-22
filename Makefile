@@ -2,7 +2,7 @@ TARGET_NAME = SQLime
 OUTPUD_DIR = ./Build
 DERIVED_DATA_PATH = $(OUTPUD_DIR)/DerivedData
 
-.PHONY: clean, test, test-ios
+.PHONY: clean test test-macos test-ios
 
 clean:
 	swift package clean

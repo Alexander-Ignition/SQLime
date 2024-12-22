@@ -13,10 +13,10 @@ clean:
 lint:
 	xcodebuild -version
 	swift --version
-	swift format lint --recursive --strict ./
+	xcrun swift-format lint --recursive --strict ./
 
 format:
-	swift format --recursive --in-place  ./
+	xcrun swift-format --recursive --in-place  ./
 
 # MARK: - Tests
 

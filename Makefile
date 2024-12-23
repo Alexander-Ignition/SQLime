@@ -11,8 +11,6 @@ clean:
 # MARK: - format
 
 lint:
-	xcodebuild -version
-	swift --version
 	xcrun swift-format lint --recursive --strict ./
 
 format:

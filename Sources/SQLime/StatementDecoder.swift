@@ -2,8 +2,6 @@ import Foundation
 import SQLite3
 
 open class StatementDecoder {
-    static let shared = StatementDecoder()
-
     open var userInfo: [CodingUserInfoKey: Any] = [:]
 
     public init() {}

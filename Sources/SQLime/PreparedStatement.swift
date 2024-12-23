@@ -122,7 +122,7 @@ public final class PreparedStatement {
     }
 
     public func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
-        try StatementDecoder.shared.decode(type, from: self)
+        try StatementDecoder().decode(type, from: self)
     }
 
     // MARK: - String

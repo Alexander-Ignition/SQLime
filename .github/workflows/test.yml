@@ -35,7 +35,7 @@ jobs:
             target: test-ios
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Build and test
         run: make ${{ matrix.target }}
         shell: bash
@@ -44,7 +44,15 @@ jobs:
     runs-on: macOS-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Build and test
         run: swift test
+        shell: bash
+  Lint:
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: swift-format lint
+        run: make lint 2>&1 | Scripts/gh-workflow.swift
         shell: bash

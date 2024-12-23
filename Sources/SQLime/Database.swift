@@ -93,10 +93,10 @@ public final class Database {
 
     /// Compiling an SQL statement.
     public func prepare(_ sql: String, parameters: [SQLParameter?]) throws -> PreparedStatement {
-        var stmt: OpaquePointer?
+        var stmt: OpaquePointer!
         let code = sqlite3_prepare_v2(db, sql, -1, &stmt, nil)
         try check(code)
-        let statement = PreparedStatement(stmt: stmt!)
+        let statement = PreparedStatement(stmt: stmt)
         try statement.bind(parameters: parameters)
         return statement
     }

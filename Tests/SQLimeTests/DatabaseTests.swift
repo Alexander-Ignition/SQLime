@@ -1,5 +1,5 @@
-import XCTest
 import SQLime
+import XCTest
 
 final class DatabaseTests: XCTestCase {
     private let fileManager = FileManager.default
@@ -7,7 +7,7 @@ final class DatabaseTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        #if Xcode // for relative path
+        #if Xcode  // for relative path
         fileManager.changeCurrentDirectoryPath(#file.components(separatedBy: "/Tests")[0])
         #endif
     }
@@ -26,9 +26,9 @@ final class DatabaseTests: XCTestCase {
     func testOpenError() {
         XCTAssertThrowsError(try Database.open(at: path, options: [])) { err in
             guard let error = err as? DatabaseError else {
-                XCTFail("Unexpected error: \(err)"); return
+                return XCTFail("Unexpected error: \(err)")
             }
-            XCTAssertEqual(error.code, 21) // SQLITE_MISUSE
+            XCTAssertEqual(error.code, 21)  // SQLITE_MISUSE
             XCTAssertEqual(error.message, "bad parameter or other API misuse")
             XCTAssertEqual(error.reason, "flags must include SQLITE_OPEN_READONLY or SQLITE_OPEN_READWRITE")
         }
@@ -48,10 +48,11 @@ final class DatabaseTests: XCTestCase {
 
         var rows: [[String: String]] = []
         try database.execute("SELECT * FROM contacts;") { rows.append($0) }
-        XCTAssertEqual(rows, [
+        let expected = [
             ["id": "1", "name": "Paul"],
-            ["id": "2", "name": "John"]
-        ])
-//        try database.execute("SELECT name FROM sqlite_master WHERE type ='table';")
+            ["id": "2", "name": "John"],
+        ]
+        XCTAssertEqual(rows, expected)
+        // try database.execute("SELECT name FROM sqlite_master WHERE type ='table';")
     }
 }

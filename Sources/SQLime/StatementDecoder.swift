@@ -35,7 +35,7 @@ final class _StatementDecoder: Decoder {
         self.codingPath = codingPath
     }
 
-    func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key : CodingKey {
+    func container<Key>(keyedBy type: Key.Type) throws -> KeyedDecodingContainer<Key> where Key: CodingKey {
         let container = KeyedContainer<Key>(context: context, codingPath: codingPath)
         return KeyedDecodingContainer(container)
     }
@@ -95,7 +95,7 @@ extension _StatementDecoder {
                 throw DecodingError.valueNotFound(type, codingPath: codingPath + [key])
             }
             guard let number = Float(exactly: value) else {
-                throw DecodingError.numberNotFit(type, value: value.description, codingPath: codingPath + [key])
+                throw DecodingError.numberNotFit(type, value: value.description, path: codingPath + [key])
             }
             return number
         }
@@ -140,7 +140,7 @@ extension _StatementDecoder {
             try integer(type, forKey: key)
         }
 
-        func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T : Decodable {
+        func decode<T>(_ type: T.Type, forKey key: Key) throws -> T where T: Decodable {
             // TODO: Data
             let decoder = _StatementDecoder(context: context, codingPath: codingPath + [key])
             return try type.init(from: decoder)
@@ -149,7 +149,7 @@ extension _StatementDecoder {
         func nestedContainer<NestedKey>(
             keyedBy type: NestedKey.Type,
             forKey key: Key
-        ) throws -> KeyedDecodingContainer<NestedKey> where NestedKey : CodingKey {
+        ) throws -> KeyedDecodingContainer<NestedKey> where NestedKey: CodingKey {
             fatalError()
         }
 
@@ -171,7 +171,7 @@ extension _StatementDecoder {
                 throw DecodingError.valueNotFound(type, codingPath: codingPath + [key])
             }
             guard let number = type.init(exactly: value) else {
-                throw DecodingError.numberNotFit(type, value: value.description, codingPath: codingPath + [key])
+                throw DecodingError.numberNotFit(type, value: value.description, path: codingPath + [key])
             }
             return number
         }
@@ -187,7 +187,7 @@ extension _StatementDecoder {
         func decodeNil() -> Bool {
             context.statement.null(for: key)
         }
-        
+
         func decode(_ type: Bool.Type) throws -> Bool {
             guard let value = context.statement.int64(for: key) else {
                 throw DecodingError.valueNotFound(type, codingPath: codingPath)
@@ -201,56 +201,56 @@ extension _StatementDecoder {
             }
             return value
         }
-        
+
         func decode(_ type: Double.Type) throws -> Double {
             guard let value = context.statement.double(for: key) else {
                 throw DecodingError.valueNotFound(type, codingPath: codingPath)
             }
             return value
         }
-        
+
         func decode(_ type: Float.Type) throws -> Float {
             guard let value = context.statement.double(for: key) else {
                 throw DecodingError.valueNotFound(type, codingPath: codingPath)
             }
             guard let number = Float(exactly: value) else {
-                throw DecodingError.numberNotFit(type, value: value.description, codingPath: codingPath)
+                throw DecodingError.numberNotFit(type, value: value.description, path: codingPath)
             }
             return number
         }
-        
+
         func decode(_ type: Int.Type) throws -> Int {
             try integer(type)
         }
-        
+
         func decode(_ type: Int8.Type) throws -> Int8 {
             try integer(type)
         }
-        
+
         func decode(_ type: Int16.Type) throws -> Int16 {
             try integer(type)
         }
-        
+
         func decode(_ type: Int32.Type) throws -> Int32 {
             try integer(type)
         }
-        
+
         func decode(_ type: Int64.Type) throws -> Int64 {
             try integer(type)
         }
-        
+
         func decode(_ type: UInt.Type) throws -> UInt {
             try integer(type)
         }
-        
+
         func decode(_ type: UInt8.Type) throws -> UInt8 {
             try integer(type)
         }
-        
+
         func decode(_ type: UInt16.Type) throws -> UInt16 {
             try integer(type)
         }
-        
+
         func decode(_ type: UInt32.Type) throws -> UInt32 {
             try integer(type)
         }
@@ -258,7 +258,7 @@ extension _StatementDecoder {
         func decode(_ type: UInt64.Type) throws -> UInt64 {
             try integer(type)
         }
-        
+
         func decode<T>(_ type: T.Type) throws -> T where T: Decodable {
             // TODO: Data
             let decoder = _StatementDecoder(context: context, codingPath: codingPath)
@@ -271,7 +271,7 @@ extension _StatementDecoder {
                 throw DecodingError.valueNotFound(type, codingPath: codingPath)
             }
             guard let number = type.init(exactly: value) else {
-                throw DecodingError.numberNotFit(type, value: value.description, codingPath: codingPath)
+                throw DecodingError.numberNotFit(type, value: value.description, path: codingPath)
             }
             return number
         }
@@ -284,8 +284,8 @@ extension DecodingError {
         return DecodingError.valueNotFound(type, context)
     }
 
-    fileprivate static func numberNotFit(_ type: Any.Type, value: String, codingPath: [any CodingKey]) -> DecodingError {
-        dataCorrupted(codingPath: codingPath, "Parsed JSON number <\(value)> does not fit in \(type).")
+    fileprivate static func numberNotFit(_ type: Any.Type, value: String, path: [any CodingKey]) -> DecodingError {
+        dataCorrupted(codingPath: path, "Parsed JSON number <\(value)> does not fit in \(type).")
     }
 
     fileprivate static func dataCorrupted(codingPath: [any CodingKey], _ message: String) -> DecodingError {

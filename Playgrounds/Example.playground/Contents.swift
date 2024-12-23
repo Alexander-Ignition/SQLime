@@ -2,7 +2,8 @@
  # 🍋 SQLime
  */
 import Foundation
-import SQLime // open Package.swift and select Playgrounds/Example
+import SQLime  // open Package.swift and select Playgrounds/Example
+
 /*:
  ## Open
 
@@ -17,12 +18,14 @@ let database = try Database.open(
 
  Create table for contacts with fileds `id` and `name`.
  */
-try database.execute("""
-CREATE TABLE contacts(
-    id INT PRIMARY KEY NOT NULL,
-    name CHAR(255)
-);
-""")
+try database.execute(
+    """
+    CREATE TABLE contacts(
+        id INT PRIMARY KEY NOT NULL,
+        name CHAR(255)
+    );
+    """
+)
 /*:
  ## Insert
 

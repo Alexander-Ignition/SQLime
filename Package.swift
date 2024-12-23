@@ -12,14 +12,17 @@ let package = Package(
     products: [
         .library(
             name: "SQLime",
-            targets: ["SQLime"]),
+            targets: ["SQLime"]
+        )
     ],
     targets: [
         .target(
             name: "SQLime",
-            dependencies: []),
+            dependencies: []
+        ),
         .testTarget(
             name: "SQLimeTests",
-            dependencies: ["SQLime"]),
+            dependencies: ["SQLime"]
+        ),
     ]
 )

@@ -40,11 +40,11 @@ final class _StatementDecoder: Decoder {
         return KeyedDecodingContainer(container)
     }
 
-    func unkeyedContainer() throws -> UnkeyedDecodingContainer {
+    func unkeyedContainer() throws -> any UnkeyedDecodingContainer {
         throw DecodingError.dataCorrupted(codingPath: codingPath, "`unkeyedContainer()` not supported")
     }
 
-    func singleValueContainer() throws -> SingleValueDecodingContainer {
+    func singleValueContainer() throws -> any SingleValueDecodingContainer {
         guard let key = codingPath.last else {
             throw DecodingError.dataCorrupted(codingPath: codingPath, "key not found")
         }
@@ -153,15 +153,15 @@ extension _StatementDecoder {
             fatalError()
         }
 
-        func nestedUnkeyedContainer(forKey key: Key) throws -> UnkeyedDecodingContainer {
+        func nestedUnkeyedContainer(forKey key: Key) throws -> any UnkeyedDecodingContainer {
             fatalError()
         }
 
-        func superDecoder() throws -> Decoder {
+        func superDecoder() throws -> any Decoder {
             fatalError()
         }
 
-        func superDecoder(forKey key: Key) throws -> Decoder {
+        func superDecoder(forKey key: Key) throws -> any Decoder {
             fatalError()
         }
 

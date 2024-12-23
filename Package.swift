@@ -3,6 +3,10 @@
 
 import PackageDescription
 
+let swiftSettings: [SwiftSetting] = [
+    .enableUpcomingFeature("ExistentialAny"),
+]
+
 let package = Package(
     name: "SQLime",
     platforms: [
@@ -18,11 +22,13 @@ let package = Package(
     targets: [
         .target(
             name: "SQLime",
-            dependencies: []
+            dependencies: [],
+            swiftSettings: swiftSettings
         ),
         .testTarget(
             name: "SQLimeTests",
-            dependencies: ["SQLime"]
+            dependencies: ["SQLime"],
+            swiftSettings: swiftSettings
         ),
     ]
 )

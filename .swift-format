@@ -34,7 +34,6 @@
         "NeverUseForceTry" : true,
         "NeverUseImplicitlyUnwrappedOptionals" : false,
         "NoAssignmentInExpressions" : true,
-        "NoBlockComments" : true,
         "NoCasesWithOnlyFallthrough" : true,
         "NoEmptyTrailingClosureParentheses" : true,
         "NoLabelsInCasePatterns" : true,

@@ -49,7 +49,6 @@ jobs:
         run: swift test
         shell: bash
   Lint:
-    name: swift-format
     runs-on: macOS-latest
     steps:
       - name: Checkout

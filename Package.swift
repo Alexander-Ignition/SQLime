@@ -5,6 +5,7 @@ import PackageDescription
 
 let swiftSettings: [SwiftSetting] = [
     .enableUpcomingFeature("ExistentialAny"),
+    .enableExperimentalFeature("StrictConcurrency"),
 ]
 
 let package = Package(

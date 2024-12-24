@@ -37,9 +37,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Build and test
-        run: |
-          make ${{ matrix.target }}
-          xcrun xccov view --files-for-target SQLime --report Build/${{ matrix.target }}.xcresult >> $GITHUB_STEP_SUMMARY
+        run: make ${{ matrix.target }}
         shell: bash
   SPM:
     name: Test with SPM

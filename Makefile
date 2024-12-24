@@ -2,7 +2,7 @@ TARGET_NAME = SQLime
 OUTPUD_DIR = ./Build
 DERIVED_DATA_PATH = $(OUTPUD_DIR)/DerivedData
 
-.PHONY: clean test test-macos test-ios
+.PHONY: clean lint format test test-macos test-ios
 
 clean:
 	swift package clean
@@ -21,13 +21,19 @@ format:
 test:
 	swift test
 
+test-macos: $(OUTPUD_DIR)/test-macos.xcresult
+test-ios: $(OUTPUD_DIR)/test-ios.xcresult
+
 XCODEBUILD_TEST = xcodebuild test -quiet -scheme $(TARGET_NAME)
+XCCOV = xcrun xccov view --files-for-target $(TARGET_NAME)
 
-test-macos:
-	$(XCODEBUILD_TEST) -destination 'platform=macOS'
+$(OUTPUD_DIR)/test-macos.xcresult:
+	$(XCODEBUILD_TEST) -destination 'platform=macOS' -resultBundlePath $@
+	$(XCCOV) --report $@
 
-test-ios:
-	$(XCODEBUILD_TEST) -destination 'platform=iOS Simulator,name=iPhone 16'
+$(OUTPUD_DIR)/test-ios.xcresult:
+	$(XCODEBUILD_TEST) -destination 'platform=iOS Simulator,name=iPhone 16' -resultBundlePath $@
+	$(XCCOV) --report $@
 
 # MARK: - DocC
 

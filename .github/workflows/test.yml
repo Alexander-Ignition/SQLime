@@ -39,7 +39,7 @@ jobs:
       - name: Build and test
         run: |
           make ${{ matrix.target }}
-          xcrun xccov view --files-for-target SQLime >> $GITHUB_STEP_SUMMARY
+          xcrun xccov view --files-for-target SQLime --report Build/${{ matrix.target }}.xcresult >> $GITHUB_STEP_SUMMARY
         shell: bash
   SPM:
     name: Test with SPM
